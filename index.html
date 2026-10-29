@@ -1,1 +1,211 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fokir Baba</title>
+<style>
+* { box-sizing: border-box; }
+
+body {
+  background: #101827;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+}
+
+header {
+  background: #253147;
+  padding: 35px 15px;
+}
+
+h1 { color: gold; }
+
+.card {
+  background: #29364a;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 450px;
+}
+
+button {
+  background: gold;
+  color: #111;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 17px;
+  margin: 8px;
+  cursor: pointer;
+}
+
+input, select {
+  width: 95%;
+  padding: 13px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.wallet-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.bkash { background: #e2136e; color: white; }
+.nagad { background: #ec711c; color: white; }
+.rocket { background: #8c3494; color: white; }
+
+#transactionForm { display: none; }
+.note { color: #cbd5e1; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>👑 FOKIR BABA 👑</h1>
+  <p>Deposit & Withdraw Website</p>
+</header>
+
+<div class="card">
+  <h2>🎮 Lucky Color Game</h2>
+  <p id="result">Choose your lucky color!</p>
+  <button onclick="play()">PLAY</button>
+</div>
+
+<div class="card">
+  <h2>💰 My Wallet</h2>
+  <h3>Balance: <span id="balance">0</span> Demo Coins</h3>
+
+  <div class="wallet-buttons">
+    <button onclick="showForm('deposit')">
+      💵 ডিপোজিট
+    </button>
+    <button onclick="showForm('withdraw')">
+      💸 উত্তোলন
+    </button>
+  </div>
+
+  <p class="note">ডেমো ব্যালেন্স, আসল টাকা নয়।</p>
+</div>
+
+<div class="card" id="transactionForm">
+  <h2 id="formTitle">ডিপোজিট</h2>
+
+  <h3>পেমেন্ট মেথড</h3>
+
+  <button class="bkash" onclick="setMethod('bKash')">
+    bKash
+  </button>
+
+  <button class="nagad" onclick="setMethod('Nagad')">
+    Nagad
+  </button>
+
+  <button class="rocket" onclick="setMethod('Rocket')">
+    Rocket
+  </button>
+
+  <p>Selected: <span id="selectedMethod">None</span></p>
+
+  <input type="tel" id="phone"
+    placeholder="আপনার মোবাইল নম্বর">
+
+  <input type="number" id="amount"
+    placeholder="পরিমাণ লিখুন" min="1">
+
+  <button onclick="submitTransaction()">
+    Submit
+  </button>
+</div>
+
+<div class="card">
+  <h2>📜 Transaction History</h2>
+  <div id="history">No transactions yet</div>
+</div>
+
+<script>
+let balance = 0;
+let transactionType = "deposit";
+let selectedMethod = "";
+
+function showForm(type) {
+  transactionType = type;
+
+  document.getElementById("transactionForm").style.display =
+    "block";
+
+  document.getElementById("formTitle").innerText =
+    type === "deposit" ? "💵 ডিপোজিট" : "💸 উত্তোলন";
+}
+
+function setMethod(method) {
+  selectedMethod = method;
+  document.getElementById("selectedMethod").innerText = method;
+}
+
+function submitTransaction() {
+  const phone = document.getElementById("phone").value.trim();
+  const amount = Number(document.getElementById("amount").value);
+
+  if (!selectedMethod) {
+    alert("পেমেন্ট মেথড সিলেক্ট করুন");
+    return;
+  }
+
+  if (!/^01[0-9]{9}$/.test(phone)) {
+    alert("সঠিক মোবাইল নম্বর দিন");
+    return;
+  }
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    alert("সঠিক পরিমাণ লিখুন");
+    return;
+  }
+
+  if (transactionType === "withdraw" && amount > balance) {
+    alert("পর্যাপ্ত ব্যালেন্স নেই");
+    return;
+  }
+
+  if (transactionType === "deposit") {
+    balance += amount;
+  } else {
+    balance -= amount;
+  }
+
+  document.getElementById("balance").innerText =
+    balance.toFixed(2);
+
+  const entry = document.createElement("p");
+  entry.innerText =
+    (transactionType === "deposit" ? "ডিপোজিট" : "উত্তোলন") +
+    " | " + selectedMethod + " | " + amount + " Demo Coins";
+
+  const history = document.getElementById("history");
+
+  if (history.innerText === "No transactions yet") {
+    history.innerText = "";
+  }
+
+  history.prepend(entry);
+
+  document.getElementById("amount").value = "";
+  alert("ডেমো ট্রানজেকশন সফল হয়েছে!");
+}
+
+function play() {
+  const colors = ["🔴 Red", "🟢 Green", "🔵 Blue"];
+  const color = colors[Math.floor(Math.random() * colors.length)];
+  document.getElementById("result").innerText = color;
+}
+</script>
+
+</body>
+  </html>
+
